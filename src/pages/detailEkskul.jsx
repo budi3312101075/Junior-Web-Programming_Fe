@@ -4,7 +4,7 @@ import axios from "axios";
 import { useParams } from "react-router-dom";
 
 const DetailEkskul = () => {
-  const [nama, setNama] = useState();
+  const [namaEkskul, setNamaEkskul] = useState();
   const [data, setData] = useState();
   const { id } = useParams();
 
@@ -12,7 +12,37 @@ const DetailEkskul = () => {
     try {
       const data = await axios.get(`/pendaftaran/${id}`);
       setData(data.data.data);
-      setNama(data.data.nama);
+      setNamaEkskul(data.data.nama);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const deletedData = async (uuid) => {
+    try {
+      await axios.delete(`/pendaftaran/${uuid}`);
+      getEkskul();
+      toast.success("Data berhasil dihapus");
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const approve = async (uuid) => {
+    try {
+      await axios.patch(`/approve/${uuid}`);
+      getEkskul();
+      toast.success("Data berhasil Diterima");
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const disApprove = async (uuid) => {
+    try {
+      await axios.patch(`/disApprove/${uuid}`);
+      getEkskul();
+      toast.success("Data berhasil Ditolak");
     } catch (error) {
       console.log(error);
     }
@@ -27,7 +57,7 @@ const DetailEkskul = () => {
       <Sidebar>
         <div className="w-full h-full font-bold bg-primary p-10">
           <h1 className="text-2xl text-black font-extrabold mb-16 mt-8">
-            Detail Ekskul {nama}
+            Detail Ekskul {namaEkskul}
           </h1>
           <div className="overflow-x-auto">
             <table className="table text-center">
@@ -51,16 +81,42 @@ const DetailEkskul = () => {
                       <td>{dataItem?.deskripsi}</td>
                       <td>{dataItem?.status}</td>
                       <td className="flex flex-col items-center gap-2">
-                        <div className="flex w-full gap-1">
-                          <button className="w-full bg-yellow-500 rounded-lg py-1">
+                        {dataItem?.status === "Diajukan" ? (
+                          <>
+                            <button
+                              className="w-full bg-yellow-500 rounded-lg py-1"
+                              onClick={() => approve(dataItem.uuid)}
+                            >
+                              Terima
+                            </button>
+                            <button
+                              className="w-full bg-pink-500 rounded-lg py-1"
+                              onClick={() => disApprove(dataItem.uuid)}
+                            >
+                              Tolak
+                            </button>
+                          </>
+                        ) : dataItem?.status === "Diterima" ? (
+                          <button
+                            className="w-full bg-pink-500 rounded-lg py-1"
+                            onClick={() => disApprove(dataItem.uuid)}
+                          >
+                            Tolak
+                          </button>
+                        ) : dataItem?.status === "Ditolak" ? (
+                          <button
+                            className="w-full bg-cyan-500 rounded-lg py-1"
+                            onClick={() => approve(dataItem.uuid)}
+                          >
                             Terima
                           </button>
-                        </div>
-                        <div className="flex w-full mt-auto">
-                          <button className="w-full bg-red-500 rounded-lg py-1">
-                            Hapus
-                          </button>
-                        </div>
+                        ) : null}
+                        <button
+                          className="w-full bg-red-500 rounded-lg py-1"
+                          onClick={() => deletedData(dataItem.uuid)}
+                        >
+                          Hapus
+                        </button>
                       </td>
                     </tr>
                   ))

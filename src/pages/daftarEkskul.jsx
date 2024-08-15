@@ -5,10 +5,21 @@ import { Link } from "react-router-dom";
 import Modals from "../components/modal";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
+import { useAuth } from "../store/auth";
+import { jwtDecode } from "jwt-decode";
 
 const DaftarEkskul = () => {
+  const { loginResponse } = useAuth();
   const [currentData, setCurrentData] = useState();
   const [data, setData] = useState();
+  let role;
+  let decoded;
+
+  if (loginResponse) {
+    const token = loginResponse;
+    decoded = jwtDecode(token);
+  }
+  role = decoded?.is_admin;
 
   const {
     register,
@@ -23,6 +34,12 @@ const DaftarEkskul = () => {
     reset: resets,
     setValue,
     formState,
+  } = useForm();
+
+  const {
+    register: registerss,
+    handleSubmit: handleSubmitss,
+    reset: resetss,
   } = useForm();
 
   const getData = async () => {
@@ -43,6 +60,7 @@ const DaftarEkskul = () => {
       reset();
     } catch (error) {
       toast.error("Gagal menambahkan data");
+      document.getElementById("my_modal_1").close();
     }
   };
 
@@ -69,11 +87,6 @@ const DaftarEkskul = () => {
     }
   };
 
-  useEffect(() => {
-    getData();
-  }, []);
-
-  // Function to open modal and set form values
   const openEditModal = (data) => {
     setCurrentData(data);
     setValue("nama", data.nama); // Set values to the form
@@ -82,13 +95,33 @@ const DaftarEkskul = () => {
     document.getElementById("my_modal_2").showModal();
   };
 
+  const daftar = async (data) => {
+    try {
+      await axios.post("/pendaftaran", {
+        deskripsi: data.deskripsi,
+        id_ekskul: currentData,
+      });
+      toast.success("Anda Berhasil Mendaftar");
+      resetss();
+      document.getElementById("my_modal_3").close();
+    } catch (error) {
+      toast.error(error.response.data.msg);
+      resetss();
+      document.getElementById("my_modal_3").close();
+    }
+  };
+
+  useEffect(() => {
+    getData();
+  }, []);
+
   return (
     <>
       <Sidebar>
         <div className="w-full h-full font-bold bg-primary p-10">
           <h1 className="text-2xl text-black font-extrabold">Daftar Ekskul</h1>
           <button
-            className="mt-20 w-60 mb-5 bg-cyan-500 text-black py-2 rounded-xl"
+            className="w-60 mt-20 mb-5 bg-cyan-500 text-black py-2 rounded-xl"
             onClick={() => {
               document.getElementById("my_modal_1").showModal();
             }}
@@ -110,34 +143,48 @@ const DaftarEkskul = () => {
                 {data?.map((item, index) => (
                   <tr key={index}>
                     <th className="text-center">{index + 1}</th>
-                    <td>{item?.nama}</td>
-                    <td>{item?.jadwal}</td>
+                    <td className="w-32">{item?.nama}</td>
+                    <td className="w-44">{item?.jadwal}</td>
                     <td>{item?.deskripsi}</td>
-                    <td className="flex flex-col items-center gap-2 mr-10 w-full">
-                      <div className="flex w-full gap-1">
-                        <Link
-                          to={`/detail-ekskul/${item.uuid}`}
-                          className="w-full bg-cyan-500 rounded-lg py-1 text-center"
-                          onClick={() => console.log(item.uuid)}
-                        >
-                          Lihat
-                        </Link>
+                    {role === 1 ? (
+                      <td className="flex flex-col items-center gap-2 mr-10 w-full">
+                        <div className="flex w-full gap-1">
+                          <Link
+                            to={`/detail-ekskul/${item.uuid}`}
+                            className="w-full bg-cyan-500 rounded-lg py-1 text-center"
+                            onClick={() => console.log(item.uuid)}
+                          >
+                            Lihat
+                          </Link>
+                          <button
+                            className="w-full bg-yellow-500 rounded-lg py-1"
+                            onClick={() => openEditModal(item)}
+                          >
+                            Edit
+                          </button>
+                        </div>
+                        <div className="flex w-full mt-auto">
+                          <button
+                            className="w-full bg-red-500 rounded-lg py-1"
+                            onClick={() => deletedData(item.uuid)}
+                          >
+                            Hapus
+                          </button>
+                        </div>
+                      </td>
+                    ) : (
+                      <td>
                         <button
-                          className="w-full bg-yellow-500 rounded-lg py-1"
-                          onClick={() => openEditModal(item)}
+                          className="px-5 bg-cyan-500 rounded-lg py-1"
+                          onClick={() => {
+                            setCurrentData(item.uuid);
+                            document.getElementById("my_modal_3").showModal();
+                          }}
                         >
-                          Edit
+                          Daftar
                         </button>
-                      </div>
-                      <div className="flex w-full mt-auto">
-                        <button
-                          className="w-full bg-red-500 rounded-lg py-1"
-                          onClick={() => deletedData(item.uuid)}
-                        >
-                          Hapus
-                        </button>
-                      </div>
-                    </td>
+                      </td>
+                    )}
                   </tr>
                 ))}
               </tbody>
@@ -262,6 +309,45 @@ const DaftarEkskul = () => {
                 onClick={() => {
                   document.getElementById("my_modal_2").close();
                   resets();
+                }}
+                type="button"
+              >
+                Cancel
+              </button>
+            </div>
+          </form>
+        </div>
+      </dialog>
+
+      <dialog id="my_modal_3" className="modal">
+        <div className="modal-box bg-primary text-black max-w-xl flex flex-col gap-8">
+          <h3 className="font-bold text-lg">Ubah Data</h3>
+          <form
+            onSubmit={handleSubmitss(daftar)}
+            className="flex flex-col gap-5 w-full justify-center items-center rounded-xl"
+          >
+            <textarea
+              {...registerss("deskripsi", {
+                required: "deskripsi wajib diisi",
+              })}
+              placeholder="Deskripsi"
+              className={`textarea textarea-bordered w-full bg-primary border border-black text-black ${
+                formState.errors.deskripsi && "input-error"
+              }`}
+            />
+
+            <div className="flex w-full mt-2 gap-2">
+              <button
+                className="w-full rounded-lg bg-cyan-500 py-2 px-5"
+                type="submit"
+              >
+                Kirim
+              </button>
+              <button
+                className="w-full rounded-lg bg-red-500 py-2 px-5"
+                onClick={() => {
+                  document.getElementById("my_modal_3").close();
+                  resetss();
                 }}
                 type="button"
               >

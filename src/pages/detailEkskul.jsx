@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import Sidebar from "../components/sidebar";
 import axios from "axios";
 import { useParams } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const DetailEkskul = () => {
   const [namaEkskul, setNamaEkskul] = useState();
@@ -60,9 +61,9 @@ const DetailEkskul = () => {
             Detail Ekskul {namaEkskul}
           </h1>
           <div className="overflow-x-auto">
-            <table className="table text-center">
-              <thead>
-                <tr className="bg-base-200 text-white">
+            <table className="table text-center rounded-lg overflow-hidden">
+              <thead className="bg-base-200 text-white">
+                <tr>
                   <th className="text-center">No</th>
                   <th>Nama</th>
                   <th>Kelas</th>
@@ -74,7 +75,7 @@ const DetailEkskul = () => {
               <tbody className="text-black font-normal">
                 {data && data.length > 0 ? (
                   data.map((dataItem, index) => (
-                    <tr key={index}>
+                    <tr key={index} className="last:rounded-b-lg">
                       <th className="text-center">{index + 1}</th>
                       <td>{dataItem?.username}</td>
                       <td>{dataItem?.kelas}</td>

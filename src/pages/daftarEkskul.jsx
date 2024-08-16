@@ -119,7 +119,9 @@ const DaftarEkskul = () => {
     <>
       <Sidebar>
         <div className="w-full h-full font-bold bg-primary p-10">
-          <h1 className="text-2xl text-black font-extrabold">Daftar Ekskul</h1>
+          <h1 className="text-2xl text-black font-extrabold mt-10 -mb-7">
+            Daftar Ekskul
+          </h1>
           <button
             className="w-60 mt-20 mb-5 bg-cyan-500 text-black py-2 rounded-xl"
             onClick={() => {
@@ -129,9 +131,9 @@ const DaftarEkskul = () => {
             Tambah Data
           </button>
           <div className="overflow-x-auto">
-            <table className="table text-center">
-              <thead>
-                <tr className="bg-base-200 text-white">
+            <table className="table text-center rounded-lg overflow-hidden">
+              <thead className="bg-base-200 text-white">
+                <tr>
                   <th className="text-center">No</th>
                   <th>Nama</th>
                   <th>Jadwal</th>
@@ -141,7 +143,7 @@ const DaftarEkskul = () => {
               </thead>
               <tbody className="text-black font-normal">
                 {data?.map((item, index) => (
-                  <tr key={index}>
+                  <tr key={index} className="last:rounded-b-lg">
                     <th className="text-center">{index + 1}</th>
                     <td className="w-32">{item?.nama}</td>
                     <td className="w-44">{item?.jadwal}</td>

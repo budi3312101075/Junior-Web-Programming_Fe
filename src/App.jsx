@@ -10,6 +10,7 @@ import axios from "axios";
 import DaftarSiswa from "./pages/daftarSiswa";
 import DaftarEkskul from "./pages/daftarEkskul";
 import DetailEkskul from "./pages/detailEkskul";
+import Riwayat from "./pages/riwayat";
 
 const App = () => {
   const { loginResponse } = useAuth();
@@ -42,6 +43,7 @@ const App = () => {
       <Routes>
         <Route path="/" element={<Dashboard />} />
         <Route path="/ekskul" element={<DaftarEkskul />} />
+        <Route path="/riwayat" element={<Riwayat />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     );

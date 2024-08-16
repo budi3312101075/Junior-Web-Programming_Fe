@@ -77,7 +77,10 @@ const Sidebar = ({ children }) => {
                 >
                   Daftar Ekskul
                 </Link>
-                <Link className="flex pl-20 items-center h-8 border-b">
+                <Link
+                  to="/riwayat"
+                  className="flex pl-20 items-center h-8 border-b"
+                >
                   Riwayat Pendaftaran
                 </Link>
               </>

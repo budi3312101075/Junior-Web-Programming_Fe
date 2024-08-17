@@ -1,0 +1,41 @@
+/* AuthWrapper.css */
+
+/* Animasi Slide ke Kiri */
+.slide-left-enter {
+  transform: translateX(100%);
+  opacity: 0;
+}
+.slide-left-enter-active {
+  transform: translateX(0);
+  opacity: 1;
+  transition: transform 300ms ease-in-out, opacity 300ms ease-in-out;
+}
+.slide-left-exit {
+  transform: translateX(0);
+  opacity: 1;
+}
+.slide-left-exit-active {
+  transform: translateX(-100%);
+  opacity: 0;
+  transition: transform 300ms ease-in-out, opacity 300ms ease-in-out;
+}
+
+/* Animasi Slide ke Kanan */
+.slide-right-enter {
+  transform: translateX(-100%);
+  opacity: 0;
+}
+.slide-right-enter-active {
+  transform: translateX(0);
+  opacity: 1;
+  transition: transform 300ms ease-in-out, opacity 300ms ease-in-out;
+}
+.slide-right-exit {
+  transform: translateX(0);
+  opacity: 1;
+}
+.slide-right-exit-active {
+  transform: translateX(100%);
+  opacity: 0;
+  transition: transform 300ms ease-in-out, opacity 300ms ease-in-out;
+}

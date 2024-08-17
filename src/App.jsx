@@ -1,6 +1,5 @@
 import React from "react";
 import { Routes, Route } from "react-router-dom";
-import Login from "./pages/login";
 import NotFound from "./pages/notFound";
 import Home from "./pages/home";
 import { useAuth } from "./store/auth";
@@ -11,6 +10,7 @@ import DaftarSiswa from "./pages/daftarSiswa";
 import DaftarEkskul from "./pages/daftarEkskul";
 import DetailEkskul from "./pages/detailEkskul";
 import Riwayat from "./pages/riwayat";
+import Auth from "./pages/Auth/Auth";
 
 const App = () => {
   const { loginResponse } = useAuth();
@@ -51,7 +51,7 @@ const App = () => {
   return (
     <Routes>
       <Route path="/" element={<Home />} />
-      <Route path="/login" element={<Login />} />
+      <Route path="/login" element={<Auth />} />
       <Route path="*" element={<NotFound />} />
     </Routes>
   );

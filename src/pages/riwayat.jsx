@@ -48,15 +48,23 @@ const Riwayat = () => {
                 </tr>
               </thead>
               <tbody className="text-black font-normal">
-                {data?.map((item, index) => (
-                  <tr key={index} className="last:rounded-b-lg">
-                    <th className="text-center">{index + 1}</th>
-                    <td>{item?.namaEkskul}</td>
-                    <td>{item?.kelas}</td>
-                    <td>{item?.deskripsi}</td>
-                    <td>{item?.status}</td>
+                {data && data.length > 0 ? (
+                  data.map((item, index) => (
+                    <tr key={index} className="last:rounded-b-lg">
+                      <th className="text-center">{index + 1}</th>
+                      <td>{item?.namaEkskul}</td>
+                      <td>{item?.kelas}</td>
+                      <td>{item?.deskripsi}</td>
+                      <td>{item?.status}</td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="5" className="text-center">
+                      Data tidak ada
+                    </td>
                   </tr>
-                ))}
+                )}
               </tbody>
             </table>
           </div>

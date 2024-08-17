@@ -32,7 +32,7 @@ const LandingPage = () => {
       <Navbar />
       <div className="relative bg-tertiary">
         <video autoPlay loop muted className="w-full -mt-6 -z-50 object-cover">
-          <source src="./smk.mp4" type="video/mp4" />
+          <source src="./sma.mp4" type="video/mp4" />
         </video>
         <div className="absolute top-0 left-0 right-0 bottom-0 flex flex-col justify-center items-center z-10">
           <h1 className="text-white text-center xl:text-5xl text-base font-semibold tracking-wide mt-10 sm:mt-0">

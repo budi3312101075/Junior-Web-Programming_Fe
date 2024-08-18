@@ -5,10 +5,31 @@ import { useAuth } from "../store/auth";
 import { jwtDecode } from "jwt-decode";
 import { toast } from "react-toastify";
 import axios from "axios";
+import Modals from "./modal";
+import { useForm } from "react-hook-form";
+import { AiFillEyeInvisible } from "react-icons/ai";
+import { IoEyeSharp } from "react-icons/io5";
 
 const Sidebar = ({ children }) => {
   const navigate = useNavigate();
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm();
+
+  const {
+    register: registerss,
+    handleSubmit: handleSubmitss,
+    formState,
+    reset: resetss,
+  } = useForm();
+
   const { loginResponse, setLoginResponse, setLogOut } = useAuth();
+  const [getMe, setGetMe] = useState();
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfPassword, setConfShowPassword] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
 
@@ -19,6 +40,64 @@ const Sidebar = ({ children }) => {
     decoded = jwtDecode(token);
   }
   role = decoded?.is_admin;
+
+  const toggleConfPasswordVisibility = () => {
+    setConfShowPassword(!showConfPassword);
+  };
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
+  const getMes = async () => {
+    try {
+      const response = await axios.get(`/getMe`);
+      setGetMe(response.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const onSubmit = async (data) => {
+    const formData = new FormData();
+    formData.append("username", data.username);
+    formData.append("kelas", data.kelas);
+    if (data.photo) {
+      formData.append("photo", data.photo[0]);
+    }
+
+    try {
+      await axios.patch("/updateProfile", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      getMes();
+      reset();
+      document.getElementById("my_modal_1").close();
+      toast.success("Data Berhasil");
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const resetPassword = async (data) => {
+    try {
+      await axios.patch(`/resetPassword`, data);
+      resetss();
+      document.getElementById("my_modal_2").close();
+      toast.success("Password Berhasil");
+    } catch (error) {
+      resetss();
+      toast.error("Password Gagal Diubah");
+      document.getElementById("my_modal_2").close();
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    getMes();
+  }, []);
 
   const toggleDropdown = () => {
     setDropdownOpen(!dropdownOpen);
@@ -69,7 +148,11 @@ const Sidebar = ({ children }) => {
                 onClick={toggleDropdown}
               >
                 <div className="w-24 rounded-full">
-                  <img src="./../user.png" />
+                  {getMe?.photo != null ? (
+                    <img src={`http://localhost:5000/${getMe?.photo}`} />
+                  ) : (
+                    <img src="./../user.png" />
+                  )}
                 </div>
               </div>
               {dropdownOpen && (
@@ -78,12 +161,22 @@ const Sidebar = ({ children }) => {
                   className="absolute left-1/2 transform -translate-x-1/2 -mt-3 w-48 bg-tertiary rounded-lg shadow-lg"
                 >
                   <ul className="rounded-lg overflow-hidden">
-                    <li className="p-2 hover:bg-gray-200 cursor-pointer">
+                    <button
+                      className="p-2  cursor-pointer"
+                      onClick={() => {
+                        document.getElementById("my_modal_1").showModal();
+                      }}
+                    >
                       Ubah Profile
-                    </li>
-                    <li className="p-2 hover:bg-gray-200 cursor-pointer">
+                    </button>
+                    <button
+                      className="p-2  cursor-pointer"
+                      onClick={() => {
+                        document.getElementById("my_modal_2").showModal();
+                      }}
+                    >
                       Reset Password
-                    </li>
+                    </button>
                   </ul>
                 </div>
               )}
@@ -146,6 +239,139 @@ const Sidebar = ({ children }) => {
           </div>
         </div>
       </div>
+
+      <Modals reset={reset} title={"Ubah Profile"}>
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="flex flex-col gap-5 w-full justify-center items-center rounded-xl"
+          id="modalForm"
+        >
+          <input
+            defaultValue={getMe?.username}
+            {...register("username", {
+              required: "username harus diisi",
+              pattern: {
+                value: /^[A-Za-z\s / -]+$/i,
+                message: "username hanya boleh mengandung huruf",
+              },
+            })}
+            type="text"
+            className={`input input-bordered w-full bg-primary border border-black placeholder:text-tertiary ${
+              errors.username && "input-error"
+            }`}
+            placeholder="username"
+          />
+          {errors.username && (
+            <span className="text-red-500 text-sm">
+              {errors.username.message}
+            </span>
+          )}
+
+          <input
+            defaultValue={getMe?.kelas}
+            {...register("kelas", {
+              required: "Kelas harus diisi",
+              pattern: {
+                required: true,
+                message: "Kelas harus diisi",
+              },
+            })}
+            type="text"
+            className={`input input-bordered  w-full bg-primary border border-black placeholder:text-tertiary ${
+              errors.Kelas && "input-error"
+            }`}
+            placeholder="Kelas"
+          />
+          {errors.Kelas && (
+            <span className="text-red-500 text-sm">{errors.Kelas.message}</span>
+          )}
+
+          <input
+            {...register("photo", {
+              pattern: {
+                message: "photo harus diisi",
+              },
+            })}
+            type="file"
+            className={`input input-bordered py-2 w-full bg-primary border border-black placeholder:text-tertiary ${
+              errors.photo && "input-error"
+            }`}
+            placeholder="photo"
+          />
+          {errors.photo && (
+            <span className="text-red-500 text-sm">{errors.photo.message}</span>
+          )}
+        </form>
+      </Modals>
+
+      <dialog id="my_modal_2" className="modal">
+        <div className="modal-box bg-primary text-black max-w-xl flex flex-col gap-8">
+          <h3 className="font-bold text-lg">Reset Password</h3>
+          <form
+            onSubmit={handleSubmitss(resetPassword)}
+            className="flex flex-col gap-5 w-full justify-center items-center rounded-xl"
+          >
+            {formState.errors.password && (
+              <span className="text-red-600">Password harus diisi.</span>
+            )}
+            <div className="input input-bordered flex justify-between w-full gap-5 items-center bg-[#f2f4f6] border border-black focus-within:ring-1 focus-within:ring-black">
+              <input
+                type={showPassword ? "text" : "password"}
+                {...registerss("password", { required: true })}
+                placeholder="password"
+                className="w-full bg-[#f2f4f6] -ml-2 placeholder:text-tertiary placeholder:tracking-widest placeholder:text-xs placeholder:font-bold"
+              />
+              {showPassword ? (
+                <AiFillEyeInvisible
+                  size={25}
+                  onClick={togglePasswordVisibility}
+                />
+              ) : (
+                <IoEyeSharp size={25} onClick={togglePasswordVisibility} />
+              )}
+            </div>
+
+            {formState.errors.confpassword && (
+              <span className="text-red-600">Password harus diisi.</span>
+            )}
+            <div className="input input-bordered flex justify-between w-full gap-5 items-center bg-[#f2f4f6] border border-black focus-within:ring-1 focus-within:ring-black">
+              <input
+                type={showConfPassword ? "text" : "password"}
+                {...registerss("confpassword", { required: true })}
+                placeholder="konfirmasi password"
+                className="w-full bg-[#f2f4f6] -ml-2 placeholder:text-tertiary placeholder:tracking-widest placeholder:text-xs placeholder:font-bold"
+              />
+              {showConfPassword ? (
+                <AiFillEyeInvisible
+                  size={25}
+                  onClick={toggleConfPasswordVisibility}
+                />
+              ) : (
+                <IoEyeSharp size={25} onClick={toggleConfPasswordVisibility} />
+              )}
+            </div>
+
+            <div className="flex w-full mt-2 gap-2">
+              <button
+                className="w-full rounded-lg bg-cyan-500 py-2 px-5"
+                type="submit"
+              >
+                Kirim
+              </button>
+              <button
+                className="w-full rounded-lg bg-red-500 py-2 px-5"
+                onClick={() => {
+                  document.getElementById("my_modal_2").close();
+                  resetss();
+                }}
+                type="button"
+              >
+                Cancel
+              </button>
+            </div>
+          </form>
+        </div>
+      </dialog>
     </>
   );
 };

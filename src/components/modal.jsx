@@ -5,7 +5,7 @@ const Modals = ({ children, title, reset }) => {
     <>
       <dialog id="my_modal_1" className="modal">
         <div className="modal-box bg-primary text-black max-w-xl flex flex-col gap-8">
-          <h3 className="font-bold text-lg">{title}</h3>
+          <h3 className="font-bold text-lg text-center">{title}</h3>
           {children}
           <div className="grid grid-cols-2 gap-5">
             <button

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../store/auth";
@@ -7,8 +7,11 @@ import { toast } from "react-toastify";
 import axios from "axios";
 
 const Sidebar = ({ children }) => {
-  const { loginResponse, setLoginResponse, setLogOut } = useAuth();
   const navigate = useNavigate();
+  const { loginResponse, setLoginResponse, setLogOut } = useAuth();
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const dropdownRef = useRef(null);
+
   let role;
   let decoded;
   if (loginResponse) {
@@ -16,6 +19,22 @@ const Sidebar = ({ children }) => {
     decoded = jwtDecode(token);
   }
   role = decoded?.is_admin;
+
+  const toggleDropdown = () => {
+    setDropdownOpen(!dropdownOpen);
+  };
+  const handleClickOutside = (event) => {
+    if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+      setDropdownOpen(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   const handleLogout = async () => {
     const logout = await axios.get(`/Logout`);
@@ -42,51 +61,79 @@ const Sidebar = ({ children }) => {
             className="drawer-overlay"
           ></label>
           <div className="menu bg-black min-h-full w-80 p-4 text-white relative">
-            <div className="avatar mx-auto my-5">
-              <div className="w-24 rounded-full">
-                <img src="./../user.png" />
+            <div className="dropdown mx-auto text-center relative">
+              <div
+                className="avatar mx-auto my-5 cursor-pointer"
+                tabIndex={0}
+                role="button"
+                onClick={toggleDropdown}
+              >
+                <div className="w-24 rounded-full">
+                  <img src="./../user.png" />
+                </div>
               </div>
+              {dropdownOpen && (
+                <div
+                  ref={dropdownRef}
+                  className="absolute left-1/2 transform -translate-x-1/2 -mt-3 w-48 bg-tertiary rounded-lg shadow-lg"
+                >
+                  <ul className="rounded-lg overflow-hidden">
+                    <li className="p-2 hover:bg-gray-200 cursor-pointer">
+                      Ubah Profile
+                    </li>
+                    <li className="p-2 hover:bg-gray-200 cursor-pointer">
+                      Reset Password
+                    </li>
+                  </ul>
+                </div>
+              )}
             </div>
 
-            {role === 1 ? (
-              <>
-                <Link to="/" className="flex pl-20 items-center h-8 border-b">
-                  Dashboard
-                </Link>
-                <Link
-                  to="/ekskul"
-                  className="flex pl-20 items-center h-8 border-b"
-                >
-                  Daftar Ekskul
-                </Link>
-                <Link
-                  to="/siswa"
-                  className="flex pl-20 items-center h-8 border-b"
-                >
-                  Daftar Data Siswa
-                </Link>
-              </>
-            ) : role === 0 ? (
-              <>
-                <Link to="/" className="flex pl-20 items-center h-8 border-b">
-                  Dashboard
-                </Link>
-                <Link
-                  to="/ekskul"
-                  className="flex pl-20 items-center h-8 border-b"
-                >
-                  Daftar Ekskul
-                </Link>
-                <Link
-                  to="/riwayat"
-                  className="flex pl-20 items-center h-8 border-b"
-                >
-                  Riwayat Pendaftaran
-                </Link>
-              </>
-            ) : (
-              <>maaf anda tidak punya akses</>
-            )}
+            <div
+              className={`transition-all duration-300 ${
+                dropdownOpen ? "mt-20" : "mt-0"
+              }`}
+            >
+              {role === 1 ? (
+                <>
+                  <Link to="/" className="flex pl-20 items-center h-8 border-b">
+                    Dashboard
+                  </Link>
+                  <Link
+                    to="/ekskul"
+                    className="flex pl-20 items-center h-8 border-b"
+                  >
+                    Daftar Ekskul
+                  </Link>
+                  <Link
+                    to="/siswa"
+                    className="flex pl-20 items-center h-8 border-b"
+                  >
+                    Daftar Data Siswa
+                  </Link>
+                </>
+              ) : role === 0 ? (
+                <>
+                  <Link to="/" className="flex pl-20 items-center h-8 border-b">
+                    Dashboard
+                  </Link>
+                  <Link
+                    to="/ekskul"
+                    className="flex pl-20 items-center h-8 border-b"
+                  >
+                    Daftar Ekskul
+                  </Link>
+                  <Link
+                    to="/riwayat"
+                    className="flex pl-20 items-center h-8 border-b"
+                  >
+                    Riwayat Pendaftaran
+                  </Link>
+                </>
+              ) : (
+                <>maaf anda tidak punya akses</>
+              )}
+            </div>
 
             <div className="absolute bottom-8 left-8">
               <button

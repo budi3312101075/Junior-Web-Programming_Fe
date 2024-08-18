@@ -31,10 +31,15 @@ const LandingPage = () => {
     <div className="font-montserrat max-h-max overflow-x-hidden">
       <Navbar />
       <div className="relative bg-tertiary">
-        <video autoPlay loop muted className="w-full -mt-6 -z-50 object-cover">
+        <video
+          autoPlay
+          loop
+          muted
+          className="w-full h-auto -mt-6 -z-50 object-cover"
+        >
           <source src="./sma.mp4" type="video/mp4" />
         </video>
-        <div className="absolute top-0 left-0 right-0 bottom-0 flex flex-col justify-center items-center z-10">
+        <div className="absolute top-0 left-0 right-0 bottom-0 flex flex-col justify-center items-center z-10 ">
           <h1 className="text-white text-center xl:text-5xl text-base font-semibold tracking-wide mt-10 sm:mt-0">
             HI, WE BELIEVES THAT
             <span className="bg-gradient-to-r  from-cyan-400 via-blue-600 to-purple-500 bg-clip-text text-transparent">
@@ -54,7 +59,7 @@ const LandingPage = () => {
         </div>
       </div>
       {/* section 2 ke bawah agar overlap vidionya */}
-      <div className="absolute top-[640px]">
+      <div className="absolute 2xl:top-[720px] z-20">
         <div className="grid sm:grid-cols-2 gap-28 py-12 bg-tertiary z-10 ">
           <img
             className="w-96 mx-auto mt-16 sm:w-full sm:ml-10"

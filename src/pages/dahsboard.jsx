@@ -21,26 +21,26 @@ const Dashboard = () => {
     <>
       <Sidebar>
         <div className="w-full h-full font-bold bg-primary p-10">
-          <h1
-            className={`text-2xl text-black font-extrabold mt-10  capitalize
-            `}
-          >
-            Halo Selamat Datang {getMe?.username}
-          </h1>
-          <div className="w-full grid grid-cols-3 gap-4 h-60 font-bold bg-black p-10 rounded-lg mt-2">
-            <div className="bg-quaternary w-full h-full rounded-lg"></div>
-            <div className="bg-quaternary w-full h-full rounded-lg">
-              <h1 className="text-black">Banyak Ekskul</h1>
+          <div className="w-full h-64 mt-5 rounded-lg shadow-md border border-gray-300 bg-quaternary flex ">
+            <div className="flex flex-col gap-4 w-[700px] text-black px-10  ">
+              <h1
+                className={`text-2xl text-black font-extrabold mt-10 capitalize `}
+              >
+                Halo Selamat Datang <br /> {getMe?.username}
+              </h1>
+
+              <h1 className="text-base font-medium tracking-wide font-sans ">
+                Kelas : {getMe?.kelas}
+              </h1>
             </div>
-            {getMe?.is_admin === 1 ? (
-              <div className="bg-quaternary w-full h-full rounded-lg">
-                <h1 className="text-black">Banyak Siswa</h1>
-              </div>
-            ) : getMe?.is_admin === 0 ? (
-              <div className="bg-quaternary w-full h-full rounded-lg">
-                <h1 className="text-black">Anda Sudah Mendaftar Sebanyak</h1>
-              </div>
-            ) : null}
+            <video
+              autoPlay
+              loop
+              muted
+              className="w-full rounded-r-lg object-cover"
+            >
+              <source src="./sma.mp4" type="video/mp4" />
+            </video>
           </div>
         </div>
       </Sidebar>

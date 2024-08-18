@@ -5,7 +5,6 @@ import { useAuth } from "../store/auth";
 import { jwtDecode } from "jwt-decode";
 import { toast } from "react-toastify";
 import axios from "axios";
-import Modals from "./modal";
 import { useForm } from "react-hook-form";
 import { AiFillEyeInvisible } from "react-icons/ai";
 import { IoEyeSharp } from "react-icons/io5";
@@ -74,7 +73,7 @@ const Sidebar = ({ children }) => {
       });
       getMes();
       reset();
-      document.getElementById("my_modal_1").close();
+      document.getElementById("my_modal_70").close();
       toast.success("Data Berhasil");
     } catch (error) {
       console.log(error);
@@ -85,12 +84,12 @@ const Sidebar = ({ children }) => {
     try {
       await axios.patch(`/resetPassword`, data);
       resetss();
-      document.getElementById("my_modal_2").close();
+      document.getElementById("my_modal_69").close();
       toast.success("Password Berhasil");
     } catch (error) {
       resetss();
       toast.error("Password Gagal Diubah");
-      document.getElementById("my_modal_2").close();
+      document.getElementById("my_modal_69").close();
       console.log(error);
     }
   };
@@ -164,7 +163,7 @@ const Sidebar = ({ children }) => {
                     <button
                       className="p-2  cursor-pointer"
                       onClick={() => {
-                        document.getElementById("my_modal_1").showModal();
+                        document.getElementById("my_modal_70").showModal();
                       }}
                     >
                       Ubah Profile
@@ -172,7 +171,7 @@ const Sidebar = ({ children }) => {
                     <button
                       className="p-2  cursor-pointer"
                       onClick={() => {
-                        document.getElementById("my_modal_2").showModal();
+                        document.getElementById("my_modal_69").showModal();
                       }}
                     >
                       Reset Password
@@ -240,71 +239,96 @@ const Sidebar = ({ children }) => {
         </div>
       </div>
 
-      <Modals reset={reset} title={"Ubah Profile"}>
-        <form
-          onSubmit={handleSubmit(onSubmit)}
-          className="flex flex-col gap-5 w-full justify-center items-center rounded-xl"
-          id="modalForm"
-        >
-          <input
-            defaultValue={getMe?.username}
-            {...register("username", {
-              required: "username harus diisi",
-              pattern: {
-                value: /^[A-Za-z\s / -]+$/i,
-                message: "username hanya boleh mengandung huruf",
-              },
-            })}
-            type="text"
-            className={`input input-bordered w-full bg-primary border border-black placeholder:text-tertiary ${
-              errors.username && "input-error"
-            }`}
-            placeholder="username"
-          />
-          {errors.username && (
-            <span className="text-red-500 text-sm">
-              {errors.username.message}
-            </span>
-          )}
+      <dialog id="my_modal_70" className="modal">
+        <div className="modal-box bg-primary text-black max-w-xl flex flex-col gap-8">
+          <h3 className="font-bold text-lg">Ubah Profile</h3>
+          <form
+            onSubmit={handleSubmit(onSubmit)}
+            className="flex flex-col gap-5 w-full justify-center items-center rounded-xl"
+          >
+            <input
+              defaultValue={getMe?.username}
+              {...register("username", {
+                required: "username harus diisi",
+                pattern: {
+                  value: /^[A-Za-z\s / -]+$/i,
+                  message: "username hanya boleh mengandung huruf",
+                },
+              })}
+              type="text"
+              className={`input input-bordered w-full bg-primary border border-black placeholder:text-tertiary ${
+                errors.username && "input-error"
+              }`}
+              placeholder="username"
+            />
+            {errors.username && (
+              <span className="text-red-500 text-sm">
+                {errors.username.message}
+              </span>
+            )}
 
-          <input
-            defaultValue={getMe?.kelas}
-            {...register("kelas", {
-              required: "Kelas harus diisi",
-              pattern: {
-                required: true,
-                message: "Kelas harus diisi",
-              },
-            })}
-            type="text"
-            className={`input input-bordered  w-full bg-primary border border-black placeholder:text-tertiary ${
-              errors.Kelas && "input-error"
-            }`}
-            placeholder="Kelas"
-          />
-          {errors.Kelas && (
-            <span className="text-red-500 text-sm">{errors.Kelas.message}</span>
-          )}
+            <input
+              defaultValue={getMe?.kelas}
+              {...register("kelas", {
+                required: "Kelas harus diisi",
+                pattern: {
+                  required: true,
+                  message: "Kelas harus diisi",
+                },
+              })}
+              type="text"
+              className={`input input-bordered  w-full bg-primary border border-black placeholder:text-tertiary ${
+                errors.Kelas && "input-error"
+              }`}
+              placeholder="Kelas"
+            />
+            {errors.Kelas && (
+              <span className="text-red-500 text-sm">
+                {errors.Kelas.message}
+              </span>
+            )}
 
-          <input
-            {...register("photo", {
-              pattern: {
-                message: "photo harus diisi",
-              },
-            })}
-            type="file"
-            className={`input input-bordered py-2 w-full bg-primary border border-black placeholder:text-tertiary ${
-              errors.photo && "input-error"
-            }`}
-            placeholder="photo"
-          />
-          {errors.photo && (
-            <span className="text-red-500 text-sm">{errors.photo.message}</span>
-          )}
-        </form>
-      </Modals>
+            <input
+              {...register("photo", {
+                pattern: {
+                  message: "photo harus diisi",
+                },
+              })}
+              type="file"
+              className={`input input-bordered py-2 w-full bg-primary border border-black placeholder:text-tertiary ${
+                errors.photo && "input-error"
+              }`}
+              placeholder="photo"
+            />
+            {errors.photo && (
+              <span className="text-red-500 text-sm">
+                {errors.photo.message}
+              </span>
+            )}
+            <div className="flex w-full mt-2 gap-2">
+              <button
+                className="w-full rounded-lg bg-cyan-500 py-2 px-5"
+                type="submit"
+              >
+                Kirim
+              </button>
+              <button
+                className="w-full rounded-lg bg-red-500 py-2 px-5"
+                onClick={() => {
+                  document.getElementById("my_modal_70").close();
+                  reset();
+                }}
+                type="button"
+              >
+                Cancel
+              </button>
+            </div>
+          </form>
+        </div>
+      </dialog>
 
-      <dialog id="my_modal_2" className="modal">
+      {/* reset Modal */}
+      <dialog id="my_modal_69" className="modal">
         <div className="modal-box bg-primary text-black max-w-xl flex flex-col gap-8">
           <h3 className="font-bold text-lg">Reset Password</h3>
           <form
@@ -361,7 +385,7 @@ const Sidebar = ({ children }) => {
               <button
                 className="w-full rounded-lg bg-red-500 py-2 px-5"
                 onClick={() => {
-                  document.getElementById("my_modal_2").close();
+                  document.getElementById("my_modal_69").close();
                   resetss();
                 }}
                 type="button"

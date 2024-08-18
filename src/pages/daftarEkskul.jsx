@@ -119,11 +119,17 @@ const DaftarEkskul = () => {
     <>
       <Sidebar>
         <div className="w-full h-full font-bold bg-primary p-10">
-          <h1 className="text-2xl text-black font-extrabold mt-10 -mb-7">
+          <h1
+            className={`text-2xl text-black font-extrabold mt-10  ${
+              role === 1 ? "-mb-7" : " mb-2"
+            }`}
+          >
             Daftar Ekskul
           </h1>
           <button
-            className="w-60 mt-20 mb-5 bg-cyan-500 text-black py-2 rounded-xl"
+            className={`w-60 mt-20 mb-5 bg-cyan-500 text-black py-2 rounded-xl ${
+              role === 1 ? "" : "hidden"
+            }`}
             onClick={() => {
               document.getElementById("my_modal_1").showModal();
             }}
@@ -200,7 +206,7 @@ const DaftarEkskul = () => {
         <form
           onSubmit={handleSubmit(onSubmit)}
           className="flex flex-col gap-5 w-full justify-center items-center rounded-xl"
-          id="modalForm"
+          id="modalForms"
         >
           <input
             {...register("nama", {
@@ -211,7 +217,7 @@ const DaftarEkskul = () => {
               },
             })}
             type="text"
-            className={`input input-bordered w-full bg-primary border border-black placeholder:text-tertiary ${
+            className={`input input-bordered w-full bg-primary border border-black placeholder:text-gray-500 ${
               errors.nama && "input-error"
             }`}
             placeholder="nama ekskul"
@@ -229,7 +235,7 @@ const DaftarEkskul = () => {
               },
             })}
             type="text"
-            className={`input input-bordered w-full bg-primary border border-black placeholder:text-tertiary ${
+            className={`input input-bordered w-full bg-primary border border-black placeholder:text-gray-500 ${
               errors.jadwal && "input-error"
             }`}
             placeholder="Jadwal Hari Latihan"
@@ -245,7 +251,7 @@ const DaftarEkskul = () => {
               required: "deskripsi wajib diisi",
             })}
             placeholder="Deskripsi"
-            className={`textarea textarea-bordered w-full bg-primary border border-black text-black ${
+            className={`textarea textarea-bordered w-full bg-primary border border-black text-black placeholder:text-gray-500 ${
               errors?.deskripsi && "input-error"
             }`}
           />
@@ -323,7 +329,7 @@ const DaftarEkskul = () => {
 
       <dialog id="my_modal_3" className="modal">
         <div className="modal-box bg-primary text-black max-w-xl flex flex-col gap-8">
-          <h3 className="font-bold text-lg">Ubah Data</h3>
+          <h3 className="font-bold text-lg">Daftar Ekskul</h3>
           <form
             onSubmit={handleSubmitss(daftar)}
             className="flex flex-col gap-5 w-full justify-center items-center rounded-xl"
@@ -332,7 +338,7 @@ const DaftarEkskul = () => {
               {...registerss("deskripsi", {
                 required: "deskripsi wajib diisi",
               })}
-              placeholder="Deskripsi"
+              placeholder="Deskripsikan kenapa kami harus menerima anda"
               className={`textarea textarea-bordered w-full bg-primary border border-black text-black ${
                 formState.errors.deskripsi && "input-error"
               }`}

@@ -11,7 +11,7 @@ const Modals = ({ children, title, reset }) => {
             <button
               className="w-full rounded-lg bg-cyan-500 py-2"
               type="submit"
-              form="modalForm"
+              form="modalForms"
             >
               Kirim
             </button>

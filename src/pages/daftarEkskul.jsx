@@ -111,6 +111,17 @@ const DaftarEkskul = () => {
     }
   };
 
+  const statusEkskul = async (id) => {
+    try {
+      const response = await axios.patch(`/statusEkskul/${id}`);
+      getData();
+      toast.success(response.data);
+    } catch (error) {
+      toast.error("error");
+      console.log(error);
+    }
+  };
+
   useEffect(() => {
     getData();
   }, []);
@@ -144,6 +155,7 @@ const DaftarEkskul = () => {
                   <th>Nama</th>
                   <th>Jadwal</th>
                   <th>Deskripsi</th>
+                  <th>Status</th>
                   <th>Aksi</th>
                 </tr>
               </thead>
@@ -154,43 +166,60 @@ const DaftarEkskul = () => {
                     <td className="w-32">{item?.nama}</td>
                     <td className="w-44">{item?.jadwal}</td>
                     <td>{item?.deskripsi}</td>
+                    <td className="w-48">{item?.status}</td>
                     {role === 1 ? (
-                      <td className="flex flex-col items-center gap-2 mr-10 w-full">
-                        <div className="flex w-full gap-1">
-                          <Link
-                            to={`/detail-ekskul/${item.uuid}`}
-                            className="w-full bg-cyan-500 rounded-lg py-1 text-center"
-                            onClick={() => console.log(item.uuid)}
-                          >
-                            Lihat
-                          </Link>
-                          <button
-                            className="w-full bg-yellow-500 rounded-lg py-1"
-                            onClick={() => openEditModal(item)}
-                          >
-                            Edit
-                          </button>
-                        </div>
-                        <div className="flex w-full mt-auto">
-                          <button
-                            className="w-full bg-red-500 rounded-lg py-1"
-                            onClick={() => deletedData(item.uuid)}
-                          >
-                            Hapus
-                          </button>
-                        </div>
+                      <td className="grid grid-cols-2  w-40 justify-center items-center gap-1">
+                        <Link
+                          to={`/detail-ekskul/${item.uuid}`}
+                          className="w-full bg-cyan-500 rounded-lg py-1 text-center"
+                          onClick={() => console.log(item.uuid)}
+                        >
+                          Lihat
+                        </Link>
+                        <button
+                          className="w-full bg-yellow-500 rounded-lg py-1"
+                          onClick={() => openEditModal(item)}
+                        >
+                          Edit
+                        </button>
+                        <button
+                          className={`w-full rounded-lg py-1 ${
+                            item.status === "Open Recruitment"
+                              ? "bg-red-500"
+                              : item.status === "Close Recruitment"
+                              ? " bg-green-500"
+                              : "bg-none"
+                          }`}
+                          onClick={() => statusEkskul(item.uuid)}
+                        >
+                          {item.status === "Open Recruitment"
+                            ? "Close"
+                            : "Open"}
+                        </button>
+                        <button
+                          className="w-full bg-red-500 rounded-lg py-1"
+                          onClick={() => deletedData(item.uuid)}
+                        >
+                          Hapus
+                        </button>
                       </td>
                     ) : (
                       <td>
-                        <button
-                          className="px-5 bg-cyan-500 rounded-lg py-1"
-                          onClick={() => {
-                            setCurrentData(item.uuid);
-                            document.getElementById("my_modal_3").showModal();
-                          }}
-                        >
-                          Daftar
-                        </button>
+                        {item?.status === "Open Recruitment" ? (
+                          <button
+                            className="px-5 bg-cyan-500 rounded-lg py-1"
+                            onClick={() => {
+                              setCurrentData(item.uuid);
+                              document.getElementById("my_modal_3").showModal();
+                            }}
+                          >
+                            Daftar
+                          </button>
+                        ) : item?.status === "Close Recruitment" ? (
+                          <h1>Pendaftaran Telah Ditutup</h1>
+                        ) : (
+                          <h1>Tidak Valid</h1>
+                        )}
                       </td>
                     )}
                   </tr>

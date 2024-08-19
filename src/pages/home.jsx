@@ -170,7 +170,7 @@ const LandingPage = () => {
                 <div className="collapse collapse-plus bg-quaternary rounded-lg p-6 ">
                   <input type="radio" name="my-accordion-3" />
                   <div className="collapse-title text-xl font-medium">
-                    What is Infinite Learning
+                    What is Sultan Iskandar Muda
                   </div>
                   <div className="collapse-content">
                     <p>hello</p>
